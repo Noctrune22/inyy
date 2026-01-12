@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Selamat Ulang Tahun 🤍</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,#ffe6f0,#fff1f8,#fff);
+  min-height:100vh;
+  overflow-x:hidden;
+  color:#444;
+}
+
+/* balon */
+.balloon{
+  position:fixed;
+  bottom:-100px;
+  width:50px;height:70px;
+  background:pink;
+  border-radius:50%;
+  opacity:.3;
+  animation:float 8s infinite ease-in-out;
+}
+.balloon:nth-child(1){left:10%;animation-delay:0s}
+.balloon:nth-child(2){left:30%;animation-delay:2s}
+.balloon:nth-child(3){left:60%;animation-delay:4s}
+.balloon:nth-child(4){left:80%;animation-delay:1s}
+
+@keyframes float{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(-120vh)}
+}
+
+/* section */
+.section{
+  display:none;
+  min-height:100vh;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  animation:fade .8s ease;
+}
+.section.active{display:flex}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:none}
+}
+
+/* card */
+.card{
+  background:rgba(255,255,255,.9);
+  padding:30px;
+  border-radius:20px;
+  max-width:420px;
+  width:100%;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+h1{color:#ff6fae;margin-bottom:10px}
+h2{color:#ff9ecb;margin-bottom:15px}
+p{margin:10px 0;line-height:1.6}
+
+button{
+  border:none;
+  padding:12px 22px;
+  border-radius:30px;
+  background:linear-gradient(135deg,#ff8fcf,#ffb3dd);
+  color:white;
+  font-size:15px;
+  cursor:pointer;
+  margin:8px;
+}
+button:disabled{opacity:.5}
+
+/* GAME */
+#board{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin:15px auto;
+}
+.game-card{
+  height:80px;
+  font-size:32px;
+  border-radius:12px;
+  background:#ffd6e9;
+  cursor:pointer;
+}
+
+/* kalah */
+.shake{animation:shake .4s}
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  50%{transform:translateX(6px)}
+  75%{transform:translateX(-6px)}
+  100%{transform:translateX(0)}
+}
+
+/* confetti */
+.confetti{
+  position:fixed;
+  width:8px;height:8px;
+  background:pink;
+  top:-10px;
+  animation:fall 3s linear forwards;
+}
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(360deg);opacity:0}
+}
+
+/* cake */
+.cake{
+  width:160px;height:100px;
+  background:#ffb6d9;
+  border-radius:0 0 20px 20px;
+  margin:20px auto;
+  position:relative;
+}
+.candle{
+  width:10px;height:40px;
+  background:white;
+  position:absolute;
+  top:-40px;left:50%;
+  transform:translateX(-50%);
+}
+.flame{
+  width:14px;height:20px;
+  background:orange;
+  border-radius:50%;
+  position:absolute;
+  top:-20px;left:50%;
+  transform:translateX(-50%);
+  animation:flicker .3s infinite;
+}
+.flame.off{display:none}
+@keyframes flicker{
+  50%{transform:translateX(-50%) scale(1.2)}
+}
+
+/* footer */
+footer{
+  font-size:12px;
+  opacity:.6;
+  margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🎵 BACKSOUND -->
+<audio id="bgm" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9f8d5b6c5e.mp3" type="audio/mpeg">
+</audio>
+
+<div class="balloon"></div><div class="balloon"></div>
+<div class="balloon"></div><div class="balloon"></div>
+
+<!-- STEP 1 -->
+<div id="s1" class="section active">
+  <div class="card">
+    <h1>Hai Diny 🤍</h1>
+    <p>
+      Ini kecil-kecilan aja… tapi aku bikinnya sambil senyum sendiri hehe 🥺  
+      Pelan-pelan ya bacanya.
+    </p>
+    <button onclick="start()">Mulai 💕</button>
+  </div>
+</div>
+
+<!-- STEP 2 GAME -->
+<div id="s2" class="section">
+  <div class="card">
+    <h2>Main game dulu 🎮</h2>
+    <p>6 kartu, 3 nyawa yaa 😆</p>
+    <div id="board"></div>
+    <p id="life">Nyawa: 3</p>
+    <button onclick="go(3)" id="nextGame" disabled>Lanjut</button>
+  </div>
+</div>
+
+<!-- STEP 3 CANDLE -->
+<div id="s3" class="section">
+  <div class="card">
+    <h2>Tiup lilinnya 🎂</h2>
+    <p>Buat harapan manis dulu… ✨</p>
+    <div class="cake">
+      <div class="candle">
+        <div class="flame" id="flame"></div>
+      </div>
+    </div>
+    <button onclick="blow()">Tiup Lilin 💨</button>
+    <button onclick="go(4)" id="afterCandle" disabled>Lanjut</button>
+  </div>
+</div>
+
+<!-- STEP 4 MESSAGE -->
+<div id="s4" class="section">
+  <div class="card">
+    <h2>Selamat Ulang Tahun 🎂</h2>
+    <p>
+      Dulu kita ketemu di Roblox…  
+      lucu yaa, dari hal sesederhana itu 🥹  
+      Aku harap kamu selalu sehat, kuat, dan dikelilingi hal-hal baik.
+    </p>
+    <p>
+      Aku nggak maksa apa-apa kok 🤍  
+      cuma pengen kamu tau…  
+      aku masih peduli, masih doain.
+    </p>
+    <button onclick="go(5)">Playlist Kita 🎶</button>
+  </div>
+</div>
+
+<!-- STEP 5 MUSIC -->
+<div id="s5" class="section">
+  <div class="card">
+    <h2>Lagu dari kita 🎶</h2>
+    <p>Pilih satu yaa, gantian dengernya 🤍</p>
+
+    <button onclick="play(1)">1</button>
+    <button onclick="play(2)">2</button>
+    <button onclick="play(3)">3</button>
+    <button onclick="play(4)">4</button>
+    <button onclick="play(5)">5</button>
+
+    <iframe id="yt" width="0" height="0" allow="autoplay"></iframe>
+
+    <button onclick="resume()">Nyalain backsound 🤍</button>
+    <button onclick="go(6)">Terakhir 💗</button>
+  </div>
+</div>
+
+<!-- STEP 6 END -->
+<div id="s6" class="section">
+  <div class="card">
+    <h2>Udah abis 🥺</h2>
+    <p>
+      Makasih yaa udah sampai sini 🤍  
+      Semoga kamu senyum dikit… itu aja udah bikin aku seneng.
+    </p>
+    <p>
+      Sampai jumpa di ulang tahun kamu tahun depan 🌷
+    </p>
+    <footer>aku buatnya pakai hati loh</footer>
+  </div>
+</div>
+
+<script>
+function go(n){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'))
+  document.getElementById('s'+n).classList.add('active')
+}
+
+/* START */
+function start(){
+  document.getElementById('bgm').play()
+  go(2)
+}
+
+/* GAME */
+const emoji=['💗','🎂','🎁']
+let cards=[...emoji,...emoji].sort(()=>Math.random()-.5)
+let open=[],life=3,match=0
+
+const board=document.getElementById('board')
+const lifeText=document.getElementById('life')
+
+cards.forEach(e=>{
+  const c=document.createElement('button')
+  c.className='game-card'
+  c.onclick=()=>{
+    if(open.length<2 && !c.textContent){
+      c.textContent=e;open.push(c)
+      if(open.length==2){
+        setTimeout(()=>{
+          if(open[0].textContent==open[1].textContent){
+            match++
+            if(match==3){
+              lifeText.textContent='Yeayy menang! 💖'
+              confetti()
+              document.getElementById('nextGame').disabled=false
+            }
+          }else{
+            life--
+            lifeText.textContent='Nyawa: '+life
+            open.forEach(x=>x.textContent='')
+            if(life==0){
+              lifeText.textContent='Yah kalah… tapi kamu udah menang di hati aku 🤍'
+              board.classList.add('shake')
+              document.getElementById('nextGame').disabled=false
+            }
+          }
+          open=[]
+        },600)
+      }
+    }
+  }
+  board.appendChild(c)
+})
+
+function confetti(){
+  for(let i=0;i<40;i++){
+    let d=document.createElement('div')
+    d.className='confetti'
+    d.style.left=Math.random()*100+'vw'
+    d.style.background=['#ff9ecb','#ffd1e8'][Math.random()*2|0]
+    document.body.appendChild(d)
+    setTimeout(()=>d.remove(),3000)
+  }
+}
+
+/* CANDLE */
+function blow(){
+  // Tambahkan efek confetti saat tiup lilin untuk lebih menarik
+  confetti();
+  // Matikan flame setelah sedikit delay untuk efek smooth
+  setTimeout(() => {
+    document.getElementById('flame').classList.add('off');
+    document.getElementById('afterCandle').disabled = false;
+  }, 500); // Delay 500ms untuk animasi
+}
+
+/* MUSIC */
+function play(n){
+  document.getElementById('bgm').pause()
+  const links=[
+    'ElWFI6m-0hc',
+    'wn05Kgt73HA',
+    'n5i3QRvPA9Y',
+    'SctrVF37GAQ',
+    '2Vv-BfVoq4g'
+  ]
+  // Tambahkan &mute=1 untuk membantu autoplay di browser yang memblokir
+  document.getElementById('yt').src=
+  'https://www.youtube.com/embed/'+links[n-1]+'?autoplay=1&mute=1'
+}
+
+function resume(){
+  document.getElementById('bgm').play()
+}
+</script>
+</body>
+  </html>
