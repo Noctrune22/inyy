@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Untuk Kamu yang paling manis🤍</title>
+
+<style>
+* {
+  margin: 0; padding: 0; box-sizing: border-box;
+}
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #ffe6f0, #fff1f8, #fff);
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: #444;
+  position: relative;
+}
+
+/* balon */
+.balloon {
+  position: fixed;
+  bottom: -120px;
+  width: 50px; height: 70px;
+  background: pink;
+  border-radius: 50%;
+  opacity: .25;
+  animation: float 9s infinite ease-in-out;
+}
+.balloon:nth-child(1) { left: 10%; }
+.balloon:nth-child(2) { left: 30%; animation-delay: 2s; }
+.balloon:nth-child(3) { left: 60%; animation-delay: 4s; }
+.balloon:nth-child(4) { left: 80%; animation-delay: 1s; }
+
+@keyframes float {
+  to { transform: translateY(-130vh); }
+}
+
+/* section */
+.section {
+  display: none;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fade .8s ease;
+  flex-direction: column;
+}
+.section.active {
+  display: flex;
+}
+@keyframes fade {
+  from {
+    opacity: 0; transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* card */
+.card {
+  background: rgba(255, 255, 255, .92);
+  padding: 30px;
+  border-radius: 22px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, .12);
+  position: relative;
+  z-index: 1;
+}
+
+h1 { color: #ff6fae; }
+h2 { color: #ff9ecb; margin-bottom: 10px; }
+p { margin: 12px 0; line-height: 1.7; }
+
+button {
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #ff8fcf, #ffb3dd);
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  margin: 8px;
+}
+button:disabled {
+  opacity: .5;
+  cursor: default;
+}
+
+/* GAME */
+#board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 15px auto;
+}
+.game-card {
+  height: 80px;
+  font-size: 32px;
+  border-radius: 14px;
+  background: #ffd6e9;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* shake */
+.shake {
+  animation: shake .4s;
+}
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-6px); }
+}
+
+/* confetti */
+.confetti {
+  position: fixed;
+  width: 8px; height: 8px;
+  top: -10px;
+  animation: fall 3s linear forwards;
+  z-index: 9999;
+}
+@keyframes fall {
+  to {
+    transform: translateY(120vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* CAKE and candle */
+.cake-container {
+  position: relative;
+  width: 220px;
+  height: 160px;
+  margin: 40px auto 20px;
+}
+
+.cake {
+  width: 180px;
+  height: 110px;
+  background: #ffb6d9;
+  border-radius: 0 0 25px 25px;
+  margin: 0 auto;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(255,105,180,0.4);
+}
+
+.candle {
+  width: 20px;
+  height: 60px;
+  background: white;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.flame {
+  width: 24px;
+  height: 32px;
+  background: radial-gradient(ellipse at center, orange 60%, transparent 95%);
+  border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+  position: absolute;
+  top: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: flicker 0.3s infinite;
+  box-shadow: 0 0 10px 5px orange;
+  filter: drop-shadow(0 0 2px #ffbb55);
+  z-index: 20;
+}
+
+.flame.off {
+  display: none;
+}
+
+@keyframes flicker {
+  50% {
+    transform: translateX(-50%) scale(1.2);
+  }
+}
+
+/* notification overlay */
+#notif {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: #ff9ecb;
+  padding: 20px 40px;
+  border-radius: 30px;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  box-shadow: 0 0 20px #ff8fcf;
+  z-index: 10000;
+  opacity: 0;
+  user-select: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  border: 2px solid #ff7dbb;
+}
+
+/* wish message */
+#wishMessage {
+  margin-top: 20px;
+  font-size: 16px;
+  font-style: italic;
+  color: #ff6699;
+  font-weight: 600;
+  min-height: 3em;
+  white-space: pre-wrap;
+  overflow: hidden;
+  border: 2px solid #ff9ecc;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+/* make a wish text */
+#makeWishText {
+  font-weight: 600;
+  color: #ff4477;
+  margin-top: 15px;
+  font-size: 18px;
+  min-height: 2em;
+  white-space: nowrap;
+  overflow: hidden;
+  border-bottom: 2px solid #ff4477;
+}
+
+/* typing cursor */
+.typing-cursor {
+  display: inline-block;
+  width: 3px;
+  background-color: #ff4477;
+  margin-left: 2px;
+  animation: blink 1s infinite;
+  vertical-align: bottom;
+}
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+footer {
+  font-size: 12px;
+  opacity: .6;
+  margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🎶 BACKSOUND PLAYLIST -->
+<audio id="bgm" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9f8d5b6c5e.mp3" type="audio/mpeg" />
+</audio>
+
+<!-- 💌 SOUND EFFECT PS I LOVE YOU -->
+<audio id="pslove">
+  <source src="https://cdn.pixabay.com/download/audio/2023/03/01/audio_54b6c1a93d.mp3" type="audio/mpeg" />
+</audio>
+
+<div class="balloon"></div><div class="balloon"></div>
+<div class="balloon"></div><div class="balloon"></div>
+
+<!-- STEP 1 -->
+<div id="s1" class="section active">
+  <div class="card">
+    <h1>Hai kamu 🤍</h1>
+    <p>Ini mungkin sederhana… tapi aku bikinnya pelan-pelan sambil mikirin kamu.</p>
+    <button onclick="start()">Mulai 🤍</button>
+  </div>
+</div>
+
+<!-- STEP 2 GAME -->
+<div id="s2" class="section">
+  <div class="card">
+    <h2>Main bentar ya 🎮</h2>
+    <p>6 kartu, 3 nyawa 😆</p>
+    <div id="board"></div>
+    <p id="life">Nyawa: 3</p>
+    <button onclick="go(3)" id="nextGame" disabled>Lanjut</button>
+  </div>
+</div>
+
+<!-- STEP 3 CANDLE -->
+<div id="s3" class="section">
+  <div class="card">
+    <h2>Tiup lilinnya 🎂</h2>
+    <p>Make a Wish ✨</p>
+
+    <div class="cake-container">
+      <div class="cake"></div>
+      <div class="candle">
+        <div class="flame" id="flame"></div>
+      </div>
+    </div>
+
+    <button onclick="blow()">Tiup Lilin 💨</button>
+
+    <div id="makeWishText" style="display:none;"></div>
+    <p id="wishMessage" style="display:none;"></p>
+
+    <button onclick="go(4)" id="afterCandle" disabled>Lanjut</button>
+  </div>
+</div>
+
+<!-- STEP 4 ROMANTIS -->
+<div id="s4" class="section">
+  <div class="card">
+    <h2>Jujur dari aku 🤍</h2>
+    <p>Aku minta maaf ya… atas semua sikap dan kelakuan aku yang bikin kamu sakit.</p>
+    <p>Kita memang udah gak sama-sama lagi, tapi perasaan aku ke kamu gak pernah palsu.</p>
+    <p>Aku gak maksa apa-apa… aku cuma pengen kamu percaya lagi, kalau aku itu tulus.</p>
+    <button onclick="go(5)">Lanjut 🤍</button>
+  </div>
+</div>
+
+<!-- STEP 5 PESAN -->
+<div id="s5" class="section">
+  <div class="card">
+    <h2>Selamat ulang tahun 🎂</h2>
+    <p>Terima kasih yaa… udah jadi bagian dari cerita aku.</p>
+    <p>Kalau suatu hari nanti kamu mau buka hati lagi, aku masih di sini… versi yang belajar jadi lebih baik.</p>
+    <button onclick="go(6)">Terakhir 🤍</button>
+  </div>
+</div>
+
+<!-- STEP 6 END -->
+<div id="s6" class="section">
+  <div class="card">
+    <h2>Udah abis 🥺</h2>
+    <p>Makasih yaa udah baca sampai sini din🤍 semoga kamu senyum dikit.</p>
+    <p>Sampai jumpa di ulang tahun kamu tahun depan 🌷</p>
+    <footer>aku buatnya pakai hati</footer>
+  </div>
+</div>
+
+<!-- Notification popup -->
+<div id="notif"></div>
+
+<script>
+function go(n){
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  hideNotif();
+}
+
+/* START */
+function start(){
+  const ps = document.getElementById('pslove');
+  ps.volume = 0.9;
+  ps.play();
+
+  setTimeout(()=>{
+    document.getElementById('bgm').play();
+  },1200);
+
+  go(2);
+}
+
+/* GAME */
+const emoji=['💗','🎂','🎁'];
+let cards=[...emoji,...emoji].sort(()=>Math.random()-0.5);
+let open=[],life=3,match=0;
+
+const board=document.getElementById('board');
+const lifeText=document.getElementById('life');
+
+cards.forEach(e=>{
+  const c=document.createElement('button');
+  c.className='game-card';
+  c.onclick=()=>{
+    if(open.length<2 && !c.textContent){
+      c.textContent=e; open.push(c);
+      if(open.length==2){
+        setTimeout(()=>{
+          if(open[0].textContent==open[1].textContent){
+            match++;
+            if(match==3){
+              lifeText.textContent='Yeay berhasil!';
+              showTypingNotif('Yeay berhasil!');
+              confetti();
+              document.getElementById('nextGame').disabled=false;
+            }
+          }else{
+            life--;
+            lifeText.textContent='Nyawa: '+life;
+            open.forEach(x=>x.textContent='');
+            if(life==0){
+              lifeText.textContent='Yah, kalah tapi kamu tetap di hati aku 🥳';
+              showTypingNotif('Yah, kalah tapi kamu tetap di hati aku 🥳');
+              board.classList.add('shake');
+              document.getElementById('nextGame').disabled=false;
+            }
+          }
+          open=[];
+        },600);
+      }
+    }
+  };
+  board.appendChild(c);
+});
+
+function confetti(){
+  for(let i=0;i<40;i++){
+    let d=document.createElement('div');
+    d.className='confetti';
+    d.style.left = Math.random()*100+'vw';
+    d.style.background = ['#ff9ecb','#ffd1e8'][Math.random()*2|0];
+    document.body.appendChild(d);
+    setTimeout(()=>d.remove(),3000);
+  }
+}
+
+const notifEl = document.getElementById('notif');
+let notifTimeout;
+
+/* Typing effect for notif */
+async function showTypingNotif(text){
+  clearTimeout(notifTimeout);
+  notifEl.classList.add('show');
+  notifEl.textContent = '';
+  await typeText(notifEl, text, 40);
+  notifTimeout = setTimeout(() => {
+    notifEl.classList.remove('show');
+  }, 2500);
+}
+
+function hideNotif(){
+  notifEl.classList.remove('show');
+  clearTimeout(notifTimeout);
+}
+
+/* Typing effect helper */
+function typeText(element, text, speed=50){
+  return new Promise(resolve => {
+    let i = 0;
+    element.innerHTML = '';
+    const cursor = document.createElement('span');
+    cursor.className = 'typing-cursor';
+    element.appendChild(cursor);
+
+    function type(){
+      if(i < text.length){
+        cursor.insertAdjacentText('beforebegin', text.charAt(i));
+        i++;
+        setTimeout(type, speed);
+      } else {
+        cursor.remove();
+        resolve();
+      }
+    }
+    type();
+  });
+}
+
+/* CANDLE */
+async function blow(){
+  confetti();
+  const flame = document.getElementById('flame');
+  flame.classList.add('off');
+
+  const makeWishText = document.getElementById('makeWishText');
+  const wishMessage = document.getElementById('wishMessage');
+
+  makeWishText.style.display = 'block';
+  wishMessage.style.display = 'block';
+
+  // Clear existing text
+  makeWishText.textContent = '';
+  wishMessage.textContent = '';
+
+  // Text to show with typing
+  const makeWishStr = "Make a wish…";
+  const wishMsgStr = "A wish for u on ur birthday 🎉\nSemoga semua impian dan harapanmu terkabul. Teruslah jadi pribadi yang luar biasa!";
+
+  await typeText(makeWishText, makeWishStr, 100);
+  await typeText(wishMessage, wishMsgStr, 40);
+
+  document.getElementById('afterCandle').disabled = false;
+}
+</script>
+
+</body>
+  </html>
